@@ -17,4 +17,4 @@
 - [X] Não deve ser possivel buscar extrato de uma conta não existente
 - [X] Não deve ser possivel fazer saque em uma conta não existente
 - [X] Não deve ser possivel sazer saque quando o saldo não for suficiente
-- [X] Não deve ser possivel excluir uma conta não existente
+- [X] Não deve ser possivel excluir uma conta não existente# FINAPI
