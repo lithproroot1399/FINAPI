@@ -5,6 +5,10 @@ const { v4: uuidv4 } = require("uuid");
 const app = express();
 
 app.use(express.json());
+const path = require('path');
+
+// Serve static frontend files from project root (index.html, public/)
+app.use(express.static(path.join(__dirname, '..')));
 
 const customers = [];
 
@@ -80,7 +84,7 @@ app.post("/deposit", verifyIfExistsAccountCPF, (request, response) => {
 });
 
 app.post("/withdraw", verifyIfExistsAccountCPF, (request, response) => {
-    const { amount } = request.body;
+    const { amount, description } = request.body;
     const { customer } = request;
 
     const balance = getBalance(customer.statement);
@@ -90,6 +94,7 @@ app.post("/withdraw", verifyIfExistsAccountCPF, (request, response) => {
     }
 
     const statementOperation = {
+        description,
         amount,
         create_ad: new Date(),
         type: "debit",

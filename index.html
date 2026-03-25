@@ -1,13 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle Financeiro</title>
+    <link rel="stylesheet" href="/public/styles.css">
 </head>
 <body>
+    <main class="container">
+        <h1 className="text-green">CONTROLE FINANCEIRO</h1>
 
-    <h1>CONTROLE FINANCEIRO</h1>
-    <script src="/src/index.js"></script>
+        <section class="card">
+            <h2>Criar Conta</h2>
+            <input id="create-cpf" placeholder="CPF" />
+            <input id="create-name" placeholder="Nome" />
+            <button id="btn-create">Criar</button>
+            <div id="create-result" class="result"></div>
+        </section>
+
+        <section class="card">
+            <h2>Selecionar Conta</h2>
+            <input id="active-cpf" placeholder="CPF da conta (para operações)" />
+            <button id="btn-set-cpf">Selecionar</button>
+            <div id="active-cpf-display">Conta ativa: <span id="current-cpf">nenhuma</span></div>
+        </section>
+
+        <section class="card">
+            <h2>Operações</h2>
+            <div class="row">
+                <input id="deposit-description" placeholder="Descrição (depósito)" />
+                <input id="deposit-amount" type="number" placeholder="Valor" />
+                <button id="btn-deposit">Depositar</button>
+            </div>
+            <div class="row">
+                <input id="withdraw-description" placeholder="Descrição (saque)" />
+                <input id="withdraw-amount" type="number" placeholder="Valor (saque)" />
+                <button id="btn-withdraw">Sacar</button>
+            </div>
+            <div class="row">
+                <button id="btn-balance">Mostrar Saldo</button>
+                <button id="btn-statement">Mostrar Extrato</button>
+            </div>
+            <div id="op-result" class="result"></div>
+        </section>
+
+        <section class="card">
+            <h2>Gerenciar Conta</h2>
+            <input id="update-name" placeholder="Novo nome" />
+            <button id="btn-update">Atualizar Nome</button>
+            <button id="btn-delete">Deletar Conta</button>
+            <div id="manage-result" class="result"></div>
+        </section>
+
+        <section class="card">
+            <h2>Extrato</h2>
+            <div id="statement"></div>
+        </section>
+    </main>
+
+    <script src="/public/frontend.js"></script>
 </body>
 </html>
