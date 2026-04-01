@@ -9,6 +9,16 @@ function formatCurrency(value){
     return new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(num);
 }
 
+function formatCPF(event) {
+    let value = event.target.value.replace(/\D/g, '');
+    if (value.length <= 11) {
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+        value = value.replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
+    }
+    event.target.value = value;
+}
+
 async function createAccount(){
     const cpf = el('create-cpf').value.trim();
     const name = el('create-name').value.trim();
@@ -84,7 +94,10 @@ async function getBalance(){
     if(res.ok){
         const d = await jsonResponse(res);
         const bal = Number(d) || 0;
-        show('op-result','Saldo: ' + formatCurrency(bal));
+        const resultEl = el('op-result');
+        const balanceText = formatCurrency(bal);
+        const className = bal >= 0 ? 'balance-positive' : 'balance-negative';
+        resultEl.innerHTML = `<span class="balance-display ${className}">Saldo: ${balanceText}</span>`;
     } else {
         const d = await jsonResponse(res);
         show('op-result', d.error || 'Erro');
@@ -176,4 +189,8 @@ window.addEventListener('DOMContentLoaded', () => {
     el('btn-statement').addEventListener('click', getStatement);
     el('btn-update').addEventListener('click', updateAccount);
     el('btn-delete').addEventListener('click', deleteAccount);
+
+    // Add CPF mask to input fields
+    el('create-cpf').addEventListener('input', formatCPF);
+    el('active-cpf').addEventListener('input', formatCPF);
 });

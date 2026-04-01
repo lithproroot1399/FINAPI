@@ -10,7 +10,7 @@ const path = require('path');
 // Serve static frontend files from project root (index.html, public/)
 app.use(express.static(path.join(__dirname, '..')));
 
-const customers = [];
+const customers = [];   
 
 
 function verifyIfExistsAccountCPF(request, response, next) {
