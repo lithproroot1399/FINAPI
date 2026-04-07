@@ -125,7 +125,7 @@ function renderStatement(items){
         return `
         <div class="stmt-row ${i.type}">
             <div class="stmt-desc">${i.description || ''}</div>
-            <div class="stmt-date">${new Date(i.create_ad).toLocaleString()}</div>
+            <div class="stmt-date">${new Date(i.create_ad).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}</div>
             <div class="stmt-amount">${sign} ${formatCurrency(Math.abs(amt))}</div>
         </div>
     `}).join('');
