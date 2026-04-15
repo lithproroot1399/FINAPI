@@ -42,7 +42,8 @@ export class StatementSection {
         const totalClass = total >= 0 ? 'balance-positive' : 'balance-negative';
         html += `
             <div class="stmt-total">
-                <strong>Total: <span class="${totalClass}">${formatCurrency(total)}</span></strong>
+                <span class="stmt-total-label">Total:</span>
+                <span class="stmt-total-value ${totalClass}">${formatCurrency(total)}</span>
             </div>
         `;
 

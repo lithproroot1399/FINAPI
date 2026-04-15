@@ -1,0 +1,94 @@
+### API FINAPI - Testes Rápidos
+
+@baseUrl = http://localhost:3333/api
+@contentType = application/json
+
+### 1️⃣ Criar uma conta de teste
+POST {{baseUrl}}/accounts
+Content-Type: {{contentType}}
+
+{
+  "cpf": "12345678901",
+  "name": "João Silva"
+}
+
+### 2️⃣ Criar segunda conta
+POST {{baseUrl}}/accounts
+Content-Type: {{contentType}}
+
+{
+  "cpf": "98765432109",
+  "name": "Maria Santos"
+}
+
+### 3️⃣ Listar todas as contas
+GET {{baseUrl}}/accounts
+
+### 4️⃣ Buscar conta por CPF
+GET {{baseUrl}}/accounts/cpf/12345678901
+
+### 5️⃣ Depositar 500 reais
+# Substitua o account_id com o ID obtido na resposta anterior
+POST {{baseUrl}}/deposit
+Content-Type: {{contentType}}
+
+{
+  "account_id": "REPLACE_WITH_ACCOUNT_ID",
+  "amount": 500
+}
+
+### 6️⃣ Depositar 300 reais na segunda conta
+POST {{baseUrl}}/deposit
+Content-Type: {{contentType}}
+
+{
+  "account_id": "REPLACE_WITH_ACCOUNT_ID_2",
+  "amount": 300
+}
+
+### 7️⃣ Sacar 150 reais
+POST {{baseUrl}}/withdraw
+Content-Type: {{contentType}}
+
+{
+  "account_id": "REPLACE_WITH_ACCOUNT_ID",
+  "amount": 150
+}
+
+### 8️⃣ Obter saldo
+GET {{baseUrl}}/balance/REPLACE_WITH_ACCOUNT_ID
+
+### 9️⃣ Obter extrato completo
+GET {{baseUrl}}/statement/REPLACE_WITH_ACCOUNT_ID
+
+### 🔟 Obter extrato com filtro de data
+GET {{baseUrl}}/statement/REPLACE_WITH_ACCOUNT_ID?start_date=2024-01-01&end_date=2024-12-31
+
+### 1️⃣1️⃣ Atualizar nome da conta
+PUT {{baseUrl}}/accounts/REPLACE_WITH_ACCOUNT_ID
+Content-Type: {{contentType}}
+
+{
+  "name": "Novo Nome da Conta"
+}
+
+### 1️⃣2️⃣ Deletar conta
+DELETE {{baseUrl}}/accounts/REPLACE_WITH_ACCOUNT_ID
+
+### ❌ Teste erro - Sacar mais que o saldo
+POST {{baseUrl}}/withdraw
+Content-Type: {{contentType}}
+
+{
+  "account_id": "REPLACE_WITH_ACCOUNT_ID",
+  "amount": 999999
+}
+
+### ❌ Teste erro - CPF duplicado
+POST {{baseUrl}}/accounts
+Content-Type: {{contentType}}
+
+{
+  "cpf": "12345678901",
+  "name": "Outro Nome"
+}
