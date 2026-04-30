@@ -119,7 +119,7 @@ router.delete('/accounts/:id', async (req, res) => {
 // Depositar
 router.post('/deposit', async (req, res) => {
   try {
-    const { account_id, amount } = req.body;
+    const { account_id, amount, description } = req.body;
 
     if (!account_id || !amount) {
       return res.status(400).json({
@@ -133,7 +133,7 @@ router.post('/deposit', async (req, res) => {
       });
     }
 
-    const transaction = db.deposit(account_id, amount);
+    const transaction = db.deposit(account_id, amount, description);
     res.status(201).json(transaction);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -143,7 +143,7 @@ router.post('/deposit', async (req, res) => {
 // Sacar
 router.post('/withdraw', async (req, res) => {
   try {
-    const { account_id, amount } = req.body;
+    const { account_id, amount, description } = req.body;
 
     if (!account_id || !amount) {
       return res.status(400).json({
@@ -157,7 +157,7 @@ router.post('/withdraw', async (req, res) => {
       });
     }
 
-    const transaction = db.withdraw(account_id, amount);
+    const transaction = db.withdraw(account_id, amount, description);
     res.status(201).json(transaction);
   } catch (error) {
     res.status(400).json({ error: error.message });

@@ -1,4 +1,4 @@
-const state = { cpf: null };
+const state = { accountId: null, cpf: null };
 
 function el(id){ return document.getElementById(id); }
 function show(id, text){ el(id).innerText = text; }
@@ -24,7 +24,7 @@ async function createAccount(){
     const name = el('create-name').value.trim();
     if(!cpf || !name) return show('create-result','Preencha CPF e Nome');
 
-    const res = await fetch('/account', {
+    const res = await fetch('/api/accounts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cpf, name })
@@ -39,24 +39,35 @@ async function createAccount(){
     }
 }
 
-function setActiveCpf(){
+async function setActiveCpf(){
     const cpf = el('active-cpf').value.trim();
     if(!cpf) return;
-    state.cpf = cpf;
-    el('current-cpf').innerText = cpf;
-    show('op-result','Conta selecionada: ' + cpf);
+    const res = await fetch(`/api/accounts/cpf/${cpf}`);
+    if(res.ok){
+        const account = await jsonResponse(res);
+        if(account){
+            state.cpf = cpf;
+            state.accountId = account.id;
+            el('current-cpf').innerText = cpf;
+            show('op-result','Conta selecionada: ' + cpf);
+        } else {
+            show('op-result','Conta não encontrada');
+        }
+    } else {
+        show('op-result','Erro ao buscar conta');
+    }
 }
 
 async function deposit(){
-    if(!state.cpf) return show('op-result','Selecione uma conta');
-    const description = el('deposit-description').value.trim();
+    if(!state.accountId) return show('op-result','Selecione uma conta');
+    const description = el('deposit-description').value.trim() || 'Depósito';
     const amount = parseFloat(el('deposit-amount').value);
     if(!amount || amount <= 0) return show('op-result','Valor inválido');
 
-    const res = await fetch('/deposit', {
+    const res = await fetch('/api/deposit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', cpf: state.cpf },
-        body: JSON.stringify({ description, amount })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ account_id: state.accountId, amount, description })
     });
     if(res.status === 201){
         show('op-result','Depósito realizado: ' + formatCurrency(amount));
@@ -69,18 +80,19 @@ async function deposit(){
 }
 
 async function withdraw(){
-    if(!state.cpf) return show('op-result','Selecione uma conta');
-    const description = el('withdraw-description').value.trim();
+    if(!state.accountId) return show('op-result','Selecione uma conta');
+    const description = el('withdraw-description').value.trim() || 'Saque';
     const amount = parseFloat(el('withdraw-amount').value);
     if(!amount || amount <= 0) return show('op-result','Valor inválido');
 
-    const res = await fetch('/withdraw', {
+    const res = await fetch('/api/withdraw', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', cpf: state.cpf },
-        body: JSON.stringify({ amount, description })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ account_id: state.accountId, amount, description })
     });
     if(res.status === 201){
         show('op-result','Saque realizado: ' + formatCurrency(amount));
+        el('withdraw-description').value = '';
         el('withdraw-amount').value = '';
     } else {
         const d = await jsonResponse(res);
@@ -89,8 +101,8 @@ async function withdraw(){
 }
 
 async function getBalance(){
-    if(!state.cpf) return show('op-result','Selecione uma conta');
-    const res = await fetch('/balance', { headers: { cpf: state.cpf } });
+    if(!state.accountId) return show('op-result','Selecione uma conta');
+    const res = await fetch(`/api/balance/${state.accountId}`);
     if(res.ok){
         const d = await jsonResponse(res);
         const bal = Number(d) || 0;
@@ -105,8 +117,8 @@ async function getBalance(){
 }
 
 async function getStatement(){
-    if(!state.cpf) return show('op-result','Selecione uma conta');
-    const res = await fetch('/statement', { headers: { cpf: state.cpf } });
+    if(!state.accountId) return show('op-result','Selecione uma conta');
+    const res = await fetch(`/api/statement/${state.accountId}`);
     if(res.ok){
         const data = await jsonResponse(res);
         renderStatement(data || []);
@@ -147,15 +159,15 @@ function renderStatement(items){
 }
 
 async function updateAccount(){
-    if(!state.cpf) return show('manage-result','Selecione uma conta');
+    if(!state.accountId) return show('manage-result','Selecione uma conta');
     const name = el('update-name').value.trim();
     if(!name) return show('manage-result','Informe um nome');
-    const res = await fetch('/account', {
+    const res = await fetch(`/api/accounts/${state.accountId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', cpf: state.cpf },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name })
     });
-    if(res.status === 201){
+    if(res.ok){
         show('manage-result','Nome atualizado');
         el('update-name').value = '';
     } else {
@@ -165,11 +177,12 @@ async function updateAccount(){
 }
 
 async function deleteAccount(){
-    if(!state.cpf) return show('manage-result','Selecione uma conta');
+    if(!state.accountId) return show('manage-result','Selecione uma conta');
     if(!confirm('Confirma exclusão da conta ' + state.cpf + '?')) return;
-    const res = await fetch('/account', { method: 'DELETE', headers: { cpf: state.cpf } });
+    const res = await fetch(`/api/accounts/${state.accountId}`, { method: 'DELETE' });
     if(res.ok){
         show('manage-result','Conta deletada');
+        state.accountId = null;
         state.cpf = null;
         el('current-cpf').innerText = 'nenhuma';
         el('statement').innerHTML = '';
