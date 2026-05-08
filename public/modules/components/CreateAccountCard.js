@@ -21,11 +21,16 @@ export class CreateAccountCard {
     }
 
     async handleCreate() {
-        const cpf = this.cpfInput.value.trim();
+        const cpf = this.cpfInput.value.replace(/\D/g, '').trim();
         const name = this.nameInput.value.trim();
 
         if (!cpf || !name) {
             show('create-result', 'Preencha CPF e Nome');
+            return;
+        }
+
+        if (cpf.length !== 11) {
+            show('create-result', 'CPF inválido');
             return;
         }
 

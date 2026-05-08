@@ -34,7 +34,7 @@ export class ManageAccountCard {
         }
 
         try {
-            const { status, data } = await api.updateAccountName(appState.getCpf(), newName);
+            const { status, data } = await api.updateAccountName(appState.getAccountId(), newName);
 
             if (status === 200) {
                 show('manage-result', 'Nome atualizado com sucesso ✓');
@@ -57,7 +57,7 @@ export class ManageAccountCard {
         if (!confirm) return;
 
         try {
-            const { status, data } = await api.deleteAccount(appState.getCpf());
+            const { status, data } = await api.deleteAccount(appState.getAccountId());
 
             if (status === 200) {
                 show('manage-result', 'Conta deletada com sucesso ✓');

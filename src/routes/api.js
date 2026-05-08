@@ -9,11 +9,18 @@ const db = require('../db/queries-sqlite');
 // Criar conta
 router.post('/accounts', async (req, res) => {
   try {
-    const { cpf, name } = req.body;
+    const cpf = String(req.body.cpf || '').replace(/\D/g, '');
+    const { name } = req.body;
 
     if (!cpf || !name) {
       return res.status(400).json({
         error: 'CPF e nome são obrigatórios',
+      });
+    }
+
+    if (cpf.length !== 11) {
+      return res.status(400).json({
+        error: 'CPF inválido',
       });
     }
 
@@ -45,7 +52,7 @@ router.get('/accounts', async (req, res) => {
 // Buscar conta por CPF
 router.get('/accounts/cpf/:cpf', async (req, res) => {
   try {
-    const { cpf } = req.params;
+    const cpf = String(req.params.cpf || '').replace(/\D/g, '');
     const account = db.getAccountByCpf(cpf);
 
     if (!account) {

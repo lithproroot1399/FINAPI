@@ -15,7 +15,9 @@ button:hover{opacity:0.95}
 #statement{margin-top:8px}
 .stmt-row{display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee;flex-wrap:wrap;gap:8px}
 .stmt-row.credit{background:#e8f5e9}
+.stmt-row.credit .stmt-amount{color:#2e7d32}
 .stmt-row.debit{background:#ffebee}
+.stmt-row.debit .stmt-amount{color:#c62828}
 .stmt-desc{flex:2;min-width:100px}
 .stmt-date{flex:1;text-align:center;white-space:nowrap;min-width:100px}
 .stmt-amount{flex:0 0 140px;text-align:right;font-weight:600}

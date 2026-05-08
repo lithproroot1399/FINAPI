@@ -22,19 +22,20 @@ export class StatementSection {
             const amount = transaction.amount;
             const type = transaction.type;
             const date = formatDate(transaction.create_ad);
+            const isDeposit = type === 'deposit' || type === 'credit';
 
-            if (type === 'credit') {
+            if (isDeposit) {
                 total += amount;
             } else {
                 total -= amount;
             }
 
-            const className = type === 'credit' ? 'stmt-row credit' : 'stmt-row debit';
+            const className = isDeposit ? 'stmt-row credit' : 'stmt-row debit';
             html += `
                 <div class="${className}">
                     <div class="stmt-desc">${transaction.description}</div>
                     <div class="stmt-date">${date}</div>
-                    <div class="stmt-amount">${formatCurrency(amount)} ${type === 'credit' ? '+' : '-'}</div>
+                    <div class="stmt-amount">${formatCurrency(amount)} ${isDeposit ? '+' : '-'}</div>
                 </div>
             `;
         });

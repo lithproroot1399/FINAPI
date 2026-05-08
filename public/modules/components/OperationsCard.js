@@ -47,7 +47,7 @@ export class OperationsCard {
         }
 
         try {
-            const { status, data } = await api.deposit(appState.getCpf(), description, amount);
+            const { status, data } = await api.deposit(appState.getAccountId(), description, amount);
 
             if (status === 201) {
                 show('op-result', `Depósito realizado: ${formatCurrency(amount)} ✓`);
@@ -76,7 +76,7 @@ export class OperationsCard {
         }
 
         try {
-            const { status, data } = await api.withdraw(appState.getCpf(), description, amount);
+            const { status, data } = await api.withdraw(appState.getAccountId(), description, amount);
 
             if (status === 201) {
                 show('op-result', `Saque realizado: ${formatCurrency(amount)} ✓`);
@@ -97,7 +97,7 @@ export class OperationsCard {
         }
 
         try {
-            const balance = await api.getBalance(appState.getCpf());
+            const balance = await api.getBalance(appState.getAccountId());
             const balanceNum = Number(balance) || 0;
             const balanceText = formatCurrency(balanceNum);
             const className = balanceNum >= 0 ? 'balance-positive' : 'balance-negative';
@@ -114,7 +114,7 @@ export class OperationsCard {
         }
 
         try {
-            const statement = await api.getStatement(appState.getCpf());
+            const statement = await api.getStatement(appState.getAccountId());
             this.statementComponent.render(statement);
         } catch (error) {
             show('op-result', 'Erro ao buscar extrato');

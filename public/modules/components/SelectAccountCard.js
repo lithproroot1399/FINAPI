@@ -4,6 +4,7 @@
 
 import { el, show } from '../utils.js';
 import { appState } from '../state.js';
+import * as api from '../api.js';
 
 export class SelectAccountCard {
     constructor() {
@@ -21,7 +22,7 @@ export class SelectAccountCard {
         this.updateDisplay();
     }
 
-    handleSetCpf() {
+    async handleSetCpf() {
         const cpf = this.input.value.replace(/\D/g, '');
         if (!cpf) {
             show('op-result', 'Digite um CPF');
@@ -32,10 +33,19 @@ export class SelectAccountCard {
             return;
         }
 
-        appState.setCpf(cpf);
-        this.updateDisplay();
-        show('op-result', `Conta selecionada: ${cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')}`);
-        this.input.value = '';
+        try {
+            const { status, data } = await api.getAccountByCpf(cpf);
+            if (status === 200 && data && data.id) {
+                appState.setAccount(cpf, data.id);
+                this.updateDisplay();
+                show('op-result', `Conta selecionada: ${cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')}`);
+                this.input.value = '';
+            } else {
+                show('op-result', data.error || 'Conta não encontrada');
+            }
+        } catch (error) {
+            show('op-result', 'Erro ao buscar conta');
+        }
     }
 
     updateDisplay() {
